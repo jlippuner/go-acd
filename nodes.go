@@ -17,6 +17,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"time"
 
 	"github.com/google/go-querystring/query"
 )
@@ -129,12 +130,12 @@ type nodeListInternal struct {
 // and folders, in a parent-child relationship. A node contains only metadata
 // (e.g. folder) or it contains metadata and content (e.g. file).
 type Node struct {
-	Id                *string  `json:"id"`
-	Name              *string  `json:"name"`
-	Kind              *string  `json:"kind"`
-	ModifiedDate      *string  `json:"modifiedDate"`
-	Parents           []string `json:"parents"`
-	Status            *string  `json:"status"`
+	Id                *string    `json:"id"`
+	Name              *string    `json:"name"`
+	Kind              *string    `json:"kind"`
+	ModifiedDate      *time.Time `json:"modifiedDate"`
+	Parents           []string   `json:"parents"`
+	Status            *string    `json:"status"`
 	ContentProperties *struct {
 		Size *uint64 `json:"size"`
 		Md5  *string `json:"md5"`
