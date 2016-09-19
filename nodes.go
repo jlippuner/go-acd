@@ -225,6 +225,29 @@ func (n *Node) GetMetadata() (string, error) {
 	return md.String(), nil
 }
 
+// Renames the node
+func (n *Node) Rename(newName string) (*Node, *http.Response, error) {
+	url := fmt.Sprintf("nodes/%s", *n.Id)
+	metadata := renameNode{
+		Name: newName,
+	}
+	metadataJson, err := json.Marshal(&metadata)
+	if err != nil {
+		return nil, nil, err
+	}
+	b := bytes.NewBuffer(metadataJson)
+	req, err := n.service.client.NewMetadataRequest("PATCH", url, b)
+	if err != nil {
+		return nil, nil, err
+	}
+	node := &Node{service: n.service}
+	resp, err := n.service.client.Do(req, node)
+	if err != nil {
+		return nil, resp, err
+	}
+	return node, resp, nil
+}
+
 // Trash places Node n into the trash.  If the node is a directory it
 // places it and all of its contents into the trash.
 func (n *Node) Trash() (*http.Response, error) {
@@ -381,6 +404,11 @@ type createNode struct {
 	Name    string   `json:"name"`
 	Kind    string   `json:"kind"`
 	Parents []string `json:"parents"`
+}
+
+// renameNode is a cut down set of parameters for renaming nodes
+type renameNode struct {
+	Name string `json:"name"`
 }
 
 // CreateFolder makes a new folder with the given name.
